@@ -1,0 +1,3 @@
+[submodule "EVIL"]
+	path = EVIL
+	url = git@github.com:vddCore/EVIL.git
