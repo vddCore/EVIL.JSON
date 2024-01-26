@@ -4,7 +4,7 @@ using Ceres.ExecutionEngine.TypeSystem;
 
 namespace EVIL.JSON.Deserialization
 {
-    public class JsonParser
+    internal class JsonParser
     {
         private JsonLexer _lexer;
 

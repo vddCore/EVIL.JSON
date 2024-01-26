@@ -1,6 +1,6 @@
 namespace EVIL.JSON.Deserialization
 {
-    public enum JsonTokenType
+    internal enum JsonTokenType
     {
         LBrace,
         RBrace,
