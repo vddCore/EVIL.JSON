@@ -18,7 +18,7 @@ var t = new Table
 var str = EvilJson.Serialize(t);
 Console.WriteLine(str);
 
-var parsedValue = EvilJson.Deserialize(File.ReadAllText("test2.json"));
-Console.WriteLine(parsedValue.Table!["escaped_characters"].String);
+var parsedValue = EvilJson.Deserialize(File.ReadAllText("test.json"));
+// Console.WriteLine(parsedValue.Table!["escaped_characters"].String);
 
 // Console.WriteLine(parsedValue.Array![2].Table!["friends"].Array![0].Table!["name"].String);

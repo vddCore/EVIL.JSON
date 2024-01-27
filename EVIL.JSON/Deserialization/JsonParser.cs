@@ -18,7 +18,10 @@ namespace EVIL.JSON.Deserialization
             _lexer.Load(source);
             _lexer.NextToken();
 
-            return JsonValue();
+            var value = JsonValue();
+            Match(JsonTokenType.EOF);
+
+            return value;
         }
 
         private DynamicValue JsonValue()
