@@ -52,8 +52,8 @@ namespace EVIL.JSON.Deserialization
         public static readonly JsonToken Colon = new(-1, -1, ":", JsonTokenType.Colon);
         public static readonly JsonToken Comma = new(-1, -1, ",", JsonTokenType.Comma);
         public static readonly JsonToken True = new(-1, -1, "true", JsonTokenType.True);
-        public static readonly JsonToken False = new(-1, -1, "true", JsonTokenType.False);
-        public static readonly JsonToken Null = new(-1, -1, "true", JsonTokenType.Null);
+        public static readonly JsonToken False = new(-1, -1, "false", JsonTokenType.False);
+        public static readonly JsonToken Null = new(-1, -1, "null", JsonTokenType.Null);
         public static readonly JsonToken EOF = new(-1, -1, "<EOF>", JsonTokenType.EOF);
     }
 }
