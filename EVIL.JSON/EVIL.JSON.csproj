@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EVIL\VirtualMachine\Ceres.Runtime\Ceres.Runtime.csproj" />
-    <ProjectReference Include="..\EVIL\VirtualMachine\Ceres\Ceres.csproj" />
+    <ProjectReference Include="..\..\EVIL\VirtualMachine\EVIL.Ceres.Runtime\EVIL.Ceres.Runtime.csproj" />
+    <ProjectReference Include="..\..\EVIL\VirtualMachine\EVIL.Ceres\EVIL.Ceres.csproj" />
   </ItemGroup>
 
 </Project>

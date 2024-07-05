@@ -1,18 +1,17 @@
-namespace EVIL.JSON.Deserialization
+namespace EVIL.JSON.Deserialization;
+
+internal enum JsonTokenType
 {
-    internal enum JsonTokenType
-    {
-        LBrace,
-        RBrace,
-        LBracket,
-        RBracket,
-        Colon,
-        Comma,
-        True,
-        False,
-        Null,
-        String,
-        Number,
-        EOF
-    }
+    LBrace,
+    RBrace,
+    LBracket,
+    RBracket,
+    Colon,
+    Comma,
+    True,
+    False,
+    Null,
+    String,
+    Number,
+    EOF
 }

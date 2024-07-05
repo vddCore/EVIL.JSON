@@ -1,169 +1,168 @@
+namespace EVIL.JSON.Serialization;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Ceres.ExecutionEngine.Collections;
 using Ceres.ExecutionEngine.TypeSystem;
-using EVIL.CommonTypes.TypeSystem;
+using CommonTypes.TypeSystem;
 
-namespace EVIL.JSON.Serialization
+internal static class EvilJsonSerializer
 {
-    internal static class EvilJsonSerializer
+    public static void SerializeNumber(EvilJsonEmitter emitter, double number)
     {
-        public static void SerializeNumber(EvilJsonEmitter emitter, double number)
+        emitter.EmitNumber(number);
+    }
+
+    public static void SerializeString(EvilJsonEmitter emitter, string str)
+    {
+        emitter.EmitString(str);
+    }
+
+    public static void SerializeBoolean(EvilJsonEmitter emitter, bool boolean)
+    {
+        emitter.EmitBoolean(boolean);
+    }
+
+    public static void SerializeTypeCode(EvilJsonEmitter emitter, DynamicValueType typeCode)
+    {
+        emitter.EmitNumber((int)typeCode);
+    }
+
+    public static void SerializeTable(EvilJsonEmitter emitter, Table table)
+    {
+        emitter.EmitLeftBrace();
+        emitter.EmitNewLine();
+        emitter.Indent();
+
+        var list = table.ToList();
+
+        for (var i = 0; i < list.Count; i++)
         {
-            emitter.EmitNumber(number);
-        }
+            var pair = list[i];
 
-        public static void SerializeString(EvilJsonEmitter emitter, string str)
-        {
-            emitter.EmitString(str);
-        }
+            var key = pair.Key;
+            var value = pair.Value;
 
-        public static void SerializeBoolean(EvilJsonEmitter emitter, bool boolean)
-        {
-            emitter.EmitBoolean(boolean);
-        }
-
-        public static void SerializeTypeCode(EvilJsonEmitter emitter, DynamicValueType typeCode)
-        {
-            emitter.EmitNumber((int)typeCode);
-        }
-
-        public static void SerializeTable(EvilJsonEmitter emitter, Table table)
-        {
-            emitter.EmitLeftBrace();
-            emitter.EmitNewLine();
-            emitter.Indent();
-
-            var list = table.ToList();
-
-            for (var i = 0; i < list.Count; i++)
+            if (key.Type != DynamicValueType.String)
             {
-                var pair = list[i];
-
-                var key = pair.Key;
-                var value = pair.Value;
-
-                if (key.Type != DynamicValueType.String)
-                {
-                    key = key.ConvertToString();
-                }
-
-                emitter.EmitIndentation();
-                emitter.EmitKey(key.String!);
-                emitter.EmitSpace();
-                SerializeDynamicValue(emitter, value);
-
-                if (i < list.Count - 1)
-                {
-                    emitter.EmitComma();
-                }
-
-                emitter.EmitNewLine();
+                key = key.ConvertToString();
             }
 
-            emitter.Unindent();
             emitter.EmitIndentation();
-            emitter.EmitRightBrace();
-        }
+            emitter.EmitKey(key.String!);
+            emitter.EmitSpace();
+            SerializeDynamicValue(emitter, value);
 
-        public static void SerializeArray(EvilJsonEmitter emitter, Array array)
-        {
-            emitter.EmitLeftBracket();
+            if (i < list.Count - 1)
+            {
+                emitter.EmitComma();
+            }
+
             emitter.EmitNewLine();
-            emitter.Indent();
+        }
 
-            for (var i = 0; i < array.Length; i++)
-            {
-                emitter.EmitIndentation();
-                SerializeDynamicValue(emitter, array[i]);
+        emitter.Unindent();
+        emitter.EmitIndentation();
+        emitter.EmitRightBrace();
+    }
 
-                if (i < array.Length - 1)
-                {
-                    emitter.EmitComma();
-                }
+    public static void SerializeArray(EvilJsonEmitter emitter, Array array)
+    {
+        emitter.EmitLeftBracket();
+        emitter.EmitNewLine();
+        emitter.Indent();
 
-                emitter.EmitNewLine();
-            }
-
-            emitter.Unindent();
+        for (var i = 0; i < array.Length; i++)
+        {
             emitter.EmitIndentation();
-            emitter.EmitRightBracket();
-        }
+            SerializeDynamicValue(emitter, array[i]);
 
-        public static void SerializeDynamicValue(EvilJsonEmitter emitter, DynamicValue dynamicValue)
-        {
-            switch (dynamicValue.Type)
+            if (i < array.Length - 1)
             {
-                case DynamicValueType.Number:
-                    SerializeNumber(emitter, dynamicValue.Number);
-                    break;
-
-                case DynamicValueType.String:
-                    SerializeString(emitter, dynamicValue.String!);
-                    break;
-
-                case DynamicValueType.Boolean:
-                    SerializeBoolean(emitter, dynamicValue.Boolean);
-                    break;
-
-                case DynamicValueType.TypeCode:
-                    SerializeTypeCode(emitter, dynamicValue.TypeCode);
-                    break;
-
-                case DynamicValueType.Table:
-                    EnsureNoCircularDependencies(dynamicValue.Table!);
-                    SerializeTable(emitter, dynamicValue.Table!);
-                    break;
-
-                case DynamicValueType.Array:
-                    SerializeArray(emitter, dynamicValue.Array!);
-                    break;
-
-                default:
-                    emitter.EmitNull();
-                    break;
+                emitter.EmitComma();
             }
+
+            emitter.EmitNewLine();
         }
 
-        private static void EnsureNoCircularDependencies(IEnumerable<KeyValuePair<DynamicValue, DynamicValue>> collection)
+        emitter.Unindent();
+        emitter.EmitIndentation();
+        emitter.EmitRightBracket();
+    }
+
+    public static void SerializeDynamicValue(EvilJsonEmitter emitter, DynamicValue dynamicValue)
+    {
+        switch (dynamicValue.Type)
         {
-            var queue = new Queue<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
-            var hashSet = new HashSet<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
-            hashSet.Add(collection);
-            queue.Enqueue(collection);
+            case DynamicValueType.Number:
+                SerializeNumber(emitter, dynamicValue.Number);
+                break;
 
-            do
+            case DynamicValueType.String:
+                SerializeString(emitter, dynamicValue.String!);
+                break;
+
+            case DynamicValueType.Boolean:
+                SerializeBoolean(emitter, dynamicValue.Boolean);
+                break;
+
+            case DynamicValueType.TypeCode:
+                SerializeTypeCode(emitter, dynamicValue.TypeCode);
+                break;
+
+            case DynamicValueType.Table:
+                EnsureNoCircularDependencies(dynamicValue.Table!);
+                SerializeTable(emitter, dynamicValue.Table!);
+                break;
+
+            case DynamicValueType.Array:
+                SerializeArray(emitter, dynamicValue.Array!);
+                break;
+
+            default:
+                emitter.EmitNull();
+                break;
+        }
+    }
+
+    private static void EnsureNoCircularDependencies(IEnumerable<KeyValuePair<DynamicValue, DynamicValue>> collection)
+    {
+        var queue = new Queue<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
+        var hashSet = new HashSet<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
+        hashSet.Add(collection);
+        queue.Enqueue(collection);
+
+        do
+        {
+            var processedCollection = queue.Dequeue();
+
+            foreach (var (_, value) in processedCollection)
             {
-                var processedCollection = queue.Dequeue();
-
-                foreach (var (_, value) in processedCollection)
+                if (value.Type == DynamicValueType.Array)
                 {
-                    if (value.Type == DynamicValueType.Array)
+                    if (!hashSet.Add(value.Array!))
                     {
-                        if (!hashSet.Add(value.Array!))
-                        {
-                            throw new SerializationException(
-                                "Circular reference in collection graph (array)."
-                            );
-                        }
-
-                        queue.Enqueue(value.Array!);
+                        throw new SerializationException(
+                            "Circular reference in collection graph (array)."
+                        );
                     }
-                    else if (value.Type == DynamicValueType.Table)
-                    {
-                        if (!hashSet.Add(value.Table!))
-                        {
-                            throw new SerializationException(
-                                "Circular reference in collection graph (table)."
-                            );
-                        }
 
-                        queue.Enqueue(value.Table!);
-                    }
+                    queue.Enqueue(value.Array!);
                 }
+                else if (value.Type == DynamicValueType.Table)
+                {
+                    if (!hashSet.Add(value.Table!))
+                    {
+                        throw new SerializationException(
+                            "Circular reference in collection graph (table)."
+                        );
+                    }
+
+                    queue.Enqueue(value.Table!);
+                }
+            }
                 
-            } while (queue.Any());
-        }
+        } while (queue.Any());
     }
 }
