@@ -10,24 +10,16 @@ using CommonTypes.TypeSystem;
 internal static class EvilJsonSerializer
 {
     public static void SerializeNumber(EvilJsonEmitter emitter, double number)
-    {
-        emitter.EmitNumber(number);
-    }
+        => emitter.EmitNumber(number);
 
     public static void SerializeString(EvilJsonEmitter emitter, string str)
-    {
-        emitter.EmitString(str);
-    }
+        => emitter.EmitString(str);
 
     public static void SerializeBoolean(EvilJsonEmitter emitter, bool boolean)
-    {
-        emitter.EmitBoolean(boolean);
-    }
+        => emitter.EmitBoolean(boolean);
 
     public static void SerializeTypeCode(EvilJsonEmitter emitter, DynamicValueType typeCode)
-    {
-        emitter.EmitNumber((int)typeCode);
-    }
+        => emitter.EmitNumber((int)typeCode);
 
     public static void SerializeTable(EvilJsonEmitter emitter, Table table)
     {
@@ -128,10 +120,12 @@ internal static class EvilJsonSerializer
 
     private static void EnsureNoCircularDependencies(IEnumerable<KeyValuePair<DynamicValue, DynamicValue>> collection)
     {
+        var pairs = collection.ToList();
         var queue = new Queue<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
         var hashSet = new HashSet<IEnumerable<KeyValuePair<DynamicValue, DynamicValue>>>();
-        hashSet.Add(collection);
-        queue.Enqueue(collection);
+        
+        hashSet.Add(pairs);
+        queue.Enqueue(pairs);
 
         do
         {
